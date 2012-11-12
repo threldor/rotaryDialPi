@@ -51,17 +51,17 @@ waitHandset ()
 #       0=waiting, 1=listen for no pulse, 2=listen pulse.
 #######################################################################
 
-changeState (newState)
+changeState ()
 {
-  currentTime=´$(date +%s%N)´
-  currentMillis=$((currentTime/1000000))
+  currentTime=$(date +%s%N)
+  currentMillis=$(($currentTime/1000000))
   # perhaps need to add in wrap around of millis
-  if [ $(($currentMillis-$lastStateChangeMillis)) -gt $debounce ] ; then
-    state = $newState
+  if [ $(($currentMillis-$lastStateChangeMillis)) -gt $DEBOUNCE ] ; then
+    state=$1
 	lastStateChangeMillis=$currentMillis
-	return true
+	return 0
   else
-    return false
+    return 1
   fi
 }
 
@@ -90,7 +90,7 @@ while true; do
     case $state in
 	  # WAITING
 	  0 )
-	    if [ 'gpio read $readyPin' = 0 ] && changeState($LISTENNOPULSE) ; then
+	    if [ 'gpio read $readyPin' = 0 ] && changeState $LISTENNOPULSE ; then
 		  number=0
 		fi
       ;;
@@ -100,7 +100,7 @@ while true; do
           # complete dial
           completeDial
         else if [ 'gpio read $pulsePin' = 1 ] ; then
-          changeState($LISTENPULSE)
+          changeState $LISTENPULSE 
         fi
       ;;
       # LISTENPULSE
@@ -108,7 +108,7 @@ while true; do
         if [ 'gpio read $readyPin' = 1 ] ; then
           # complete dial
           completeDial
-        else if [ 'gpio read $pulsePin' = 0 ] && changeState($LISTENNOPULSE) ; then
+        else if [ 'gpio read $pulsePin' = 0 ] && changeState $LISTENNOPULSE  ; then
           number++
         fi
       ;;
