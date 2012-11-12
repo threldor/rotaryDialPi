@@ -14,6 +14,13 @@
 readyPin=0
 pulsePin=1
 handsetPin=2
+# variables
+DEBOUNCE=0.015
+WAITING=0
+LISTENNOPULSE=1
+LISTENPULSE=2
+# more variables
+state=0
 
 # setup:
 #       Initialise the GPIO
@@ -34,28 +41,40 @@ waitHandset ()
 {
   echo -n "Waiting for handset ... "
   while [ `gpio read $handsetPin` = 1 ]; do
-    sleep 0.2
+    sleep 0.1
   done
   echo "Handset lifted"
 }
 
-# waitReady:
-#       Wait for the ready pin to change state indicating the phone is 
-#       being dialed. We also need to monitor the handset to see if
-#       this is hung up. 
+# changeState:
+#       change state to the given state, includes debounce.
+#       0=waiting, 1=listen for no pulse, 2=listen pulse.
 #######################################################################
 
-waitReady ()
+changeState (newState)
 {
-  echo -n "Waiting for ready ... "
-  while [ `gpio read $readyPin` = 1 ]; do
-    if [ `gpio read $handsetPin` = 1 ] ; then
-      # handset hung up
-      break
-    fi
-    sleep 0.1
-  done
-  echo "Handset lifted"
+  currentTime=´$(date +%s%N)´
+  currentMillis=$((currentTime/1000000))
+  # perhaps need to add in wrap around of millis
+  if [ $(($currentMillis-$lastStateChangeMillis)) -gt $debounce ] ; then
+    state = $newState
+	lastStateChangeMillis=$currentMillis
+	return true
+  else
+    return false
+  fi
+}
+
+# completeDial:
+#       Wait for the handset to be lifted. Because we have the GPIO
+#       pin pulled high, we wait for it to go low.
+#######################################################################
+
+completeDial ()
+{
+  if changeState($WAITING) ; then
+    echo $number
+  fi
 }
 
 #######################################################################
@@ -66,4 +85,33 @@ waitReady ()
 setup
 while true; do
   waitHandset
+  # someone picked up the handset so lets start watching those pins
+  while [ `gpio read $handsetPin` = 0 ] ; do
+    case $state in
+	  # WAITING
+	  0 )
+	    if [ 'gpio read $readyPin' = 0 ] && changeState($LISTENNOPULSE) ; then
+		  number=0
+		fi
+      ;;
+      # LISTENNOPULSE
+      1 )
+        if [ 'gpio read $readyPin' = 1 ] ; then
+          # complete dial
+          completeDial
+        else if [ 'gpio read $pulsePin' = 1 ] ; then
+          changeState($LISTENPULSE)
+        fi
+      ;;
+      # LISTENPULSE
+	  2 )
+        if [ 'gpio read $readyPin' = 1 ] ; then
+          # complete dial
+          completeDial
+        else if [ 'gpio read $pulsePin' = 0 ] && changeState($LISTENNOPULSE) ; then
+          number++
+        fi
+      ;;
+    esac
+	sleep 0.005
 done
