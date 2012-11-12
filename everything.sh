@@ -43,6 +43,15 @@ setup()
 #       Read all input pins and display
 #######################################################################
 
+say() { 
+  compliment=`sort -R compliments.txt | head -n 1`
+  local IFS=+;/usr/bin/mplayer -ao alsa -really-quiet -noconsolecontrols "http://translate.google.com/translate_tts?tl=en&q=$compliment"; 
+}
+
+# readAll:
+#       Read all input pins and display
+#######################################################################
+
 readAll()
 {
   echo "reading..."
@@ -91,6 +100,12 @@ completeDial ()
 {
   if changeState $WAITING ; then
     echo $(($number-1))
+    if [ $(($number-1)) = 7 ] ; then
+      say
+    fi
+    if [ $(($number-1)) = 3 ] ; then
+      say
+    fi
   fi
 }
 
