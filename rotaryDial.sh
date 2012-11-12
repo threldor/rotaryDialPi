@@ -18,12 +18,17 @@ pulsePin=4
 # GPIO 26
 handsetPin=6
 # variables
-DEBOUNCE=15
+ready=0
+pulse=0
+handset=0
+DEBOUNCE=30
 WAITING=0
 LISTENNOPULSE=1
 LISTENPULSE=2
 # more variables
 state=0
+currentTime=$(date +%s%N)
+lastStateChangeMillis=$(($currentTime/1000000))
 
 # setup:
 #       Initialise the GPIO
@@ -69,10 +74,10 @@ changeState ()
   currentTime=$(date +%s%N)
   currentMillis=$(($currentTime/1000000))
   # perhaps need to add in wrap around of millis
-  if [ $(($currentMillis-$lastStateChangeMillis)) -gt $DEBOUNCE ] ; then
+  if [ $(($currentMillis-$lastStateChangeMillis)) > $DEBOUNCE ] ; then
     state=$1
-	lastStateChangeMillis=$currentMillis
-	return 0
+    lastStateChangeMillis=$currentMillis
+    return 0
   else
     return 1
   fi
@@ -97,40 +102,37 @@ completeDial ()
 
 setup
 readAll
-waitHandset
-while true; do
-  sleep 1
-done
 
 while true; do
   waitHandset
   # someone picked up the handset so lets start watching those pins
   while [ `gpio read $handsetPin` = 0 ] ; do
     case $state in
-	  # WAITING
-	  0 )
-	    if [ 'gpio read $readyPin' = 0 ] && changeState $LISTENNOPULSE ; then
-		  number=0
-		fi
+      # WAITING
+      0 )
+        if [ `gpio read $readyPin` = 0 ] && changeState $LISTENNOPULSE ; then
+          number=0
+        fi
       ;;
       # LISTENNOPULSE
       1 )
-        if [ 'gpio read $readyPin' = 1 ] ; then
+        if [ `gpio read $readyPin` = 1 ] ; then
           # complete dial
           completeDial
-        else if [ 'gpio read $pulsePin' = 1 ] ; then
+        elif [ `gpio read $pulsePin` = 1 ] ; then
           changeState $LISTENPULSE 
         fi
       ;;
       # LISTENPULSE
-	  2 )
-        if [ 'gpio read $readyPin' = 1 ] ; then
+      2 )
+        if [ `gpio read $readyPin` = 1 ] ; then
           # complete dial
           completeDial
-        else if [ 'gpio read $pulsePin' = 0 ] && changeState $LISTENNOPULSE  ; then
-          number++
+        elif [ `gpio read $pulsePin` = 0 ] && changeState $LISTENNOPULSE  ; then
+          number=$(($number+1))
         fi
       ;;
     esac
-	sleep 0.005
+    sleep 0.001
+  done
 done
