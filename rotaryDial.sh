@@ -11,9 +11,12 @@
 #       James Connor, November 2012
 
 # input pin numbers
-readyPin=0
-pulsePin=1
-handsetPin=2
+# GPIO 24
+readyPin=5
+# GPIO 23
+pulsePin=4
+# GPIO 26
+handsetPin=6
 # variables
 DEBOUNCE=0.015
 WAITING=0
