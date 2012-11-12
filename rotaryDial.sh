@@ -18,7 +18,7 @@ pulsePin=4
 # GPIO 26
 handsetPin=6
 # variables
-DEBOUNCE=0.015
+DEBOUNCE=15
 WAITING=0
 LISTENNOPULSE=1
 LISTENPULSE=2
@@ -33,6 +33,16 @@ setup()
 {
   echo Setup
   for i in $readyPin $pulsePin $handsetPin ; do gpio mode $i in ; done
+}
+
+# readAll:
+#       Read all input pins and display
+#######################################################################
+
+readAll()
+{
+  echo "reading..."
+  for i in $readyPin $pulsePin $handsetPin ; do gpio read $i ; done
 }
 
 # waitHandset:
@@ -75,7 +85,7 @@ changeState ()
 
 completeDial ()
 {
-  if changeState($WAITING) ; then
+  if changeState $WAITING ; then
     echo $number
   fi
 }
@@ -86,6 +96,12 @@ completeDial ()
 #######################################################################
 
 setup
+readAll
+waitHandset
+while true; do
+  sleep 1
+done
+
 while true; do
   waitHandset
   # someone picked up the handset so lets start watching those pins
