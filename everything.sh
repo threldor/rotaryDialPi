@@ -66,7 +66,7 @@ readAll()
 waitHandset ()
 {
   echo -n "Waiting for handset ... "
-  while [ `gpio read $handsetPin` = 1 ]; do
+  while [ `gpio read $handsetPin` = 0 ]; do
     sleep 0.1
   done
   echo "Handset lifted"
@@ -120,7 +120,7 @@ readAll
 while true; do
   waitHandset
   # someone picked up the handset so lets start watching those pins
-  while [ `gpio read $handsetPin` = 0 ] ; do
+  while [ `gpio read $handsetPin` = 1 ] ; do
     case $state in
       # WAITING
       0 )
