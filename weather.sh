@@ -3,7 +3,7 @@
 
 if [ "$1" = "-now" ] ; then
   curl --silent "http://weather.yahooapis.com/forecastrss?w=845743&u=c" | awk -F '- '  '
-  /<b>Current Conditions:/ { getline; gsub("<.*", "", $1); printf("The weather is currently %s\n", $1); exit }'
+  /<b>Current Conditions:/ { getline; gsub("C<.*", "", $1); printf("The weather is currently %s\n", $1); exit }'
 elif [ "$1" = "-today" ] ; then
   curl --silent "http://weather.yahooapis.com/forecastrss?w=845743&u=c" | awk -F '- '  '
   /<b>Forecast/ { getline; gsub("<.*", "", $2); printf("The weather today is %s\n", $2); exit }'

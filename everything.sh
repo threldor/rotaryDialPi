@@ -39,13 +39,12 @@ setup()
   for i in $readyPin $pulsePin $handsetPin ; do gpio mode $i in ; done
 }
 
-# readAll:
-#       Read all input pins and display
+# say:
+#       say the passed arguments
 #######################################################################
 
 say() { 
-  compliment=`sort -R compliments.txt | head -n 1`
-  local IFS=+;/usr/bin/mplayer -ao alsa -really-quiet -noconsolecontrols "http://translate.google.com/translate_tts?tl=en&q=$compliment"; 
+  local IFS=+;/usr/bin/mplayer -ao alsa -really-quiet -noconsolecontrols "http://translate.google.com/translate_tts?tl=en&q=$*"; 
 }
 
 # readAll:
@@ -100,11 +99,26 @@ completeDial ()
 {
   if changeState $WAITING ; then
     echo $(($number-1))
-    if [ $(($number-1)) = 7 ] ; then
-      say
-    fi
-    if [ $(($number-1)) = 3 ] ; then
-      say
+    if [ $(($number-1)) = 1 ] ; then
+      words=`./weather.sh -now 2>&1`
+      echo $words
+      say $words
+    elif [ $(($number-1)) = 2 ] ; then
+      words=`./weather.sh -today 2>&1`
+      echo $words
+      say $words
+    elif [ $(($number-1)) = 3 ] ; then
+      words=`./weather.sh -tomorrow 2>&1`
+      echo $words
+      say $words
+    elif [ $(($number-1)) = 7 ] ; then
+      compliment=`sort -R compliments.txt | head -n 1`
+      echo $compliment
+      say $compliment
+    else
+      compliment=`sort -R compliments.txt | head -n 1`
+      echo $compliment
+      say $compliment
     fi
   fi
 }
