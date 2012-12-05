@@ -1,0 +1,32 @@
+### BEGIN INIT INFO
+# Provides: Rotary Dial functionality
+# Required-Start: $remote_fs $syslog
+# Required-Stop: $remote_fs $syslog
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: Rotary Dial Phone
+# Description: Allows weather and compliments to be read out
+### END INIT INFO
+
+
+#! /bin/sh
+# /etc/init.d/rotary
+
+
+export HOME
+case "$1" in
+    start)
+        echo "Starting Rotary Phone"
+        /home/pi/rotaryDialPi/everything.sh  2>&1 &
+    ;;
+    stop)
+        echo "Stopping Rotary Phone"
+    DIAL_PID=`ps auxwww | grep everything.sh | head -1 | awk '{print $2}'`
+    kill -9 $DIAL_PID
+    ;;
+    *)
+        echo "Usage: /etc/init.d/rotary {start|stop}"
+        exit 1
+    ;;
+esac
+exit 0

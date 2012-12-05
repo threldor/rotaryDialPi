@@ -100,23 +100,23 @@ completeDial ()
   if changeState $WAITING ; then
     echo $(($number-1))
     if [ $(($number-1)) = 1 ] ; then
-      words=`./weather.sh -now 2>&1`
+      words=`/home/pi/rotaryDialPi/weather.sh -now 2>&1`
       echo $words
       say $words
     elif [ $(($number-1)) = 2 ] ; then
-      words=`./weather.sh -today 2>&1`
+      words=`/home/pi/rotaryDialPi/weather.sh -today 2>&1`
       echo $words
       say $words
     elif [ $(($number-1)) = 3 ] ; then
-      words=`./weather.sh -tomorrow 2>&1`
+      words=`/home/pi/rotaryDialPi/weather.sh -tomorrow 2>&1`
       echo $words
       say $words
     elif [ $(($number-1)) = 7 ] ; then
-      compliment=`sort -R compliments.txt | head -n 1`
+      compliment=`sort -R /home/pi/rotaryDialPi/compliments.txt | head -n 1`
       echo $compliment
       say $compliment
     else
-      compliment=`sort -R compliments.txt | head -n 1`
+      compliment=`sort -R /home/pi/rotaryDialPi/compliments.txt | head -n 1`
       echo $compliment
       say $compliment
     fi
