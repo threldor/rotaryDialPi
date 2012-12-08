@@ -82,7 +82,7 @@ changeState ()
   currentTime=$(date +%s%N)
   currentMillis=$(($currentTime/1000000))
   # perhaps need to add in wrap around of millis
-  if [ $(($currentMillis-$lastStateChangeMillis)) > $DEBOUNCE ] ; then
+  if [ $(($currentMillis-$lastStateChangeMillis)) -gt $DEBOUNCE ] ; then
     state=$1
     lastStateChangeMillis=$currentMillis
     return 0
