@@ -112,10 +112,14 @@ completeDial ()
       words=`/home/pi/rotaryDialPi/weather.sh -tomorrow 2>&1`
       echo $words
       say $words
-    elif [ $(($number-1)) = 7 ] ; then
-      compliment=`sort -R /home/pi/rotaryDialPi/compliments.txt | head -n 1`
-      echo $compliment
-      say $compliment
+    elif [ $(($number-1)) = 4 ] ; then
+      temp=`/home/pi/rotaryDialPi/readTemperature.sh -i 2>&1`
+      echo "It is currently $temp degrees inside"
+      say "It is currently $temp degrees inside"
+    elif [ $(($number-1)) = 5 ] ; then
+      temp=`/home/pi/rotaryDialPi/readTemperature.sh -o 2>&1`
+      echo "It is currently $temp degrees outside"
+      say "It is currently $temp degrees outside"
     else
       compliment=`sort -R /home/pi/rotaryDialPi/compliments.txt | head -n 1`
       echo $compliment
