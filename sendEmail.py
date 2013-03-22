@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-import subprocess
+#import subprocess
 import smtplib
 import socket
 from email.mime.text import MIMEText
-import datetime
+#import datetime
 import sys
 
 # we assume the arguments are correct
@@ -21,15 +21,15 @@ smtpserver.ehlo()
 smtpserver.starttls()
 smtpserver.ehlo
 smtpserver.login(gmail_user, gmail_password)
-today = datetime.date.today()
+#today = datetime.date.today()
 
 # Very Linux Specific
-arg='ip route list'
-p=subprocess.Popen(arg,shell=True,stdout=subprocess.PIPE)
-data = p.communicate()
-split_data = data[0].split()
-ipaddr = split_data[split_data.index('src')+1]
-my_ip = 'Your ip is %s' %  ipaddr
+#arg='ip route list'
+#p=subprocess.Popen(arg,shell=True,stdout=subprocess.PIPE)
+#data = p.communicate()
+#split_data = data[0].split()
+#ipaddr = split_data[split_data.index('src')+1]
+#my_ip = 'Your ip is %s' %  ipaddr
 
 # the message
 msg = MIMEText(body)
