@@ -124,12 +124,12 @@ completeDial ()
       emailPass=$(cat emailPass)
       compliment=`sort -R /home/pi/rotaryDialPi/compliments.txt | head -n 1`
       say "a compliment is being sent to James"
-      echo `python ./sendEmail.py maolentelefon@gmail.com "$emailPass" 37253029363@sms.emt.ee "$compliment"`
+      echo `python /home/pi/rotaryDialPi/sendEmail.py maolentelefon@gmail.com "$emailPass" 37253029363@sms.emt.ee "$compliment"`
     elif [ $(($number-1)) = 7 ] ; then
       emailPass=$(cat emailPass)
       compliment=`sort -R /home/pi/rotaryDialPi/compliments.txt | head -n 1`
       say "a compliment is being sent to e t"
-      echo `python ./sendEmail.py maolentelefon@gmail.com "$emailPass" iti.kasser@gmail.com "$compliment"`
+      echo `python home/pi/rotaryDialPi/sendEmail.py maolentelefon@gmail.com "$emailPass" iti.kasser@gmail.com "$compliment"`
     else
       compliment=`sort -R /home/pi/rotaryDialPi/compliments.txt | head -n 1`
       echo $compliment
