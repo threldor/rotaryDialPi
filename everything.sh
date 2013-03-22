@@ -125,11 +125,13 @@ completeDial ()
       compliment=`sort -R /home/pi/rotaryDialPi/compliments.txt | head -n 1`
       say "a compliment is being sent to James"
       temp=`python /home/pi/rotaryDialPi/sendEmail.py maolentelefon@gmail.com "$emailPass" 37253029363@sms.emt.ee "$compliment" 2>&1`
+      echo $temp
     elif [ $(($number-1)) = 7 ] ; then
       emailPass=$(cat emailPass)
       compliment=`sort -R /home/pi/rotaryDialPi/compliments.txt | head -n 1`
       say "a compliment is being sent to e t"
       temp=`python home/pi/rotaryDialPi/sendEmail.py maolentelefon@gmail.com "$emailPass" iti.kasser@gmail.com "$compliment" 2>&1`
+      echo $temp
     else
       compliment=`sort -R /home/pi/rotaryDialPi/compliments.txt | head -n 1`
       echo $compliment
